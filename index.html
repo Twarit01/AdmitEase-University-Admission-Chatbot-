@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AdmitEase – Admissions Assistant</title>
+
+<style>
+:root{
+  --panel:#0b1220;
+  --card:#111827;
+  --accent:#5eead4;
+  --highlight:#fde68a;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+}
+*{box-sizing:border-box}
+
+body{
+  margin:0;height:100vh;
+  font-family:system-ui,sans-serif;
+  background:radial-gradient(circle at top,#0f172a,#020617);
+  color:var(--text);
+  display:flex;justify-content:center;align-items:center;
+}
+
+.app{
+  width:94%;height:90%;
+  display:grid;
+  grid-template-columns:330px 1fr;
+  gap:18px;
+}
+
+.sidebar{
+  background:var(--panel);
+  border-radius:18px;
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+}
+
+.brand{font-size:22px;font-weight:700}
+.tagline{font-size:13px;color:var(--muted);margin-bottom:16px}
+
+.profile{
+  background:var(--card);
+  border-radius:12px;
+  padding:12px;
+  font-size:13px;
+  margin-bottom:18px;
+}
+.profile span{color:var(--accent)}
+
+.section-title{
+  font-size:12px;
+  color:var(--muted);
+  margin:10px 0 6px;
+}
+
+.tile{
+  background:var(--card);
+  padding:14px;
+  border-radius:12px;
+  margin-bottom:10px;
+  cursor:pointer;
+  border-left:4px solid var(--accent);
+}
+
+.footer{
+  margin-top:auto;
+  font-size:12px;
+  color:var(--muted);
+}
+
+.chat{
+  background:var(--panel);
+  border-radius:18px;
+  display:flex;
+  flex-direction:column;
+}
+
+.chat-box{
+  flex:1;
+  padding:24px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+}
+
+.msg{
+  background:var(--card);
+  padding:14px 16px;
+  margin-bottom:14px;
+  border-radius:12px;
+  width:fit-content;
+  max-width:65%;
+  white-space:pre-line;
+  cursor:pointer;
+}
+
+.bot{align-self:flex-start}
+.user{
+  align-self:flex-end;
+  background:var(--accent);
+  color:#022c22;
+}
+
+.best{
+  border:2px solid var(--highlight);
+}
+
+.compare-tray{
+  background:#020617;
+  border-top:1px solid #1f2937;
+  padding:10px 16px;
+  display:none;
+  align-items:center;
+  justify-content:space-between;
+  font-size:13px;
+}
+.compare-tray button{
+  background:var(--accent);
+  border:none;
+  padding:6px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.input-area{
+  display:flex;
+  padding:14px;
+  border-top:1px solid #1f2937;
+}
+input{
+  flex:1;
+  background:#020617;
+  border:1px solid #1f2937;
+  border-radius:12px;
+  padding:12px;
+  color:white;
+  outline:none;
+}
+button{
+  margin-left:10px;
+  padding:12px 20px;
+  border-radius:12px;
+  border:none;
+  background:var(--accent);
+  font-weight:600;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="sidebar">
+  <div class="brand">🎓 AdmitEase</div>
+  <div class="tagline">Smarter university admissions</div>
+
+  <div class="profile" id="profile">
+    👤 Name: <span>—</span><br>
+    📊 %: <span>—</span><br>
+    🎯 Course: <span>—</span>
+  </div>
+
+  <div class="section-title">ACTIONS</div>
+  <div class="tile" onclick="send('universities')">🏫 Explore Universities</div>
+  <div class="tile" onclick="send('eligibility')">🧮 Check Eligibility</div>
+  <div class="tile" onclick="send('documents')">📄 Documents</div>
+
+  <div class="section-title">GUIDANCE</div>
+  <div class="tile" onclick="send('faq')">❓ FAQs</div>
+  <div class="tile" onclick="send('counselling')">🎓 Counselling</div>
+  <div class="tile" onclick="send('contact')">📞 Contact Us</div>
+
+  <div class="footer">
+    Best match shown on top ⭐
+  </div>
+</div>
+
+<div class="chat">
+  <div class="chat-box" id="chat"></div>
+
+  <div class="compare-tray" id="compareTray">
+    <span id="compareText">Selected: </span>
+    <button onclick="compareSelected()">Compare</button>
+  </div>
+
+  <div class="input-area">
+    <input id="input" placeholder="Enter Name Percentage Course…" />
+    <button onclick="send()">Send</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+let student={name:"",percentage:0,course:""};
+let selectedUniversities=[];
+let universitiesCache=[];
+const chatBox=document.getElementById("chat");
+
+add("👋 Welcome to AdmitEase!\nEnter Name Percentage Course","bot");
+
+async function send(textFromTile){
+  const input=document.getElementById("input");
+  const text=textFromTile||input.value.trim();
+  if(!text)return;
+
+  add(text,"user");
+
+  if(!student.name){
+    const p=text.split(" ");
+    if(p.length<3||isNaN(p[1])){
+      add("⚠️ Enter: Name Percentage Course","bot");
+      input.value="";
+      return;
+    }
+    student.name=p[0];
+    student.percentage=parseInt(p[1]);
+    student.course=p.slice(2).join(" ");
+    updateProfile();
+    add(`Welcome ${student.name}! Explore universities to get started.`,"bot");
+    input.value="";
+    return;
+  }
+
+  if(text==="documents"){
+    add("📄 Documents Required:\n• Mark sheets\n• ID Proof\n• Entrance score\n• Photos","bot");
+    return;
+  }
+
+  if(text==="faq"){
+    add(
+`❓ Frequently Asked Questions
+
+1️⃣ Can I apply to multiple universities?
+Yes, you can apply to multiple universities at the same time.
+
+2️⃣ What if my percentage is low?
+You may still qualify for private or flexible eligibility universities.
+
+3️⃣ Are application deadlines strict?
+Most deadlines are strict, late applications may be rejected.
+
+4️⃣ Is counselling paid?
+Basic counselling is free; advanced guidance may be optional.`,
+"bot");
+    return;
+  }
+
+  if(text==="counselling"){
+    add("🎓 Counselling Support\nGet expert guidance based on your profile and preferences.","bot");
+    return;
+  }
+
+  if(text==="contact"){
+    add("📞 Contact Us\nEmail: admissions@admitease.com\nPhone: +91-90000-00000","bot");
+    return;
+  }
+
+  const res=await fetch("http://127.0.0.1:8000/chat",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({message:text})
+  });
+  const data=await res.json();
+
+  if(data.type==="universities"){
+    universitiesCache=data.data;
+    showUniversities(data.data);
+  }else if(data.type==="eligibility_form"){
+    checkEligibility();
+  }else{
+    add(data.message,"bot");
+  }
+
+  input.value="";
+}
+
+function showUniversities(unis){
+  let best=null;
+  unis.forEach(u=>{
+    if(student.percentage>=u.min_percentage){
+      if(!best||u.min_percentage>best.min_percentage)best=u;
+    }
+  });
+
+  if(best) renderUniversity(best,true);
+  unis.forEach(u=>{
+    if(!best||u.name!==best.name) renderUniversity(u,false);
+  });
+}
+
+function renderUniversity(u,isBest){
+  const eligible=student.percentage>=u.min_percentage;
+  const div=document.createElement("div");
+  div.className="msg bot"+(isBest?" best":"");
+  div.innerText=
+`🏫 ${u.name}
+Programs: ${u.programs.join(", ")}
+Min %: ${u.min_percentage}
+Deadline: ${u.deadline}
+Mode: ${u.mode}
+Status: ${eligible?"✅ Eligible":"❌ Not Eligible"}
+${isBest?"⭐ BEST MATCH":""}`;
+
+  div.onclick=()=>toggleSelect(u.name);
+  chatBox.appendChild(div);
+  chatBox.scrollTop=chatBox.scrollHeight;
+}
+
+function toggleSelect(name){
+  if(selectedUniversities.includes(name)){
+    selectedUniversities=selectedUniversities.filter(n=>n!==name);
+  }else if(selectedUniversities.length<2){
+    selectedUniversities.push(name);
+  }
+  updateCompareTray();
+}
+
+function updateCompareTray(){
+  const tray=document.getElementById("compareTray");
+  const text=document.getElementById("compareText");
+  if(selectedUniversities.length){
+    tray.style.display="flex";
+    text.innerText="Selected: "+selectedUniversities.join(", ");
+  }else{
+    tray.style.display="none";
+  }
+}
+
+function compareSelected(){
+  if(selectedUniversities.length<2){
+    add("⚠️ Select two universities to compare.","bot");
+    return;
+  }
+  const a=universitiesCache.find(u=>u.name===selectedUniversities[0]);
+  const b=universitiesCache.find(u=>u.name===selectedUniversities[1]);
+
+  add(
+`📊 UNIVERSITY COMPARISON
+
+${a.name}
+Min %: ${a.min_percentage}
+Programs: ${a.programs.join(", ")}
+Deadline: ${a.deadline}
+Mode: ${a.mode}
+
+${b.name}
+Min %: ${b.min_percentage}
+Programs: ${b.programs.join(", ")}
+Deadline: ${b.deadline}
+Mode: ${b.mode}`,"bot");
+
+  selectedUniversities=[];
+  updateCompareTray();
+}
+
+function updateProfile(){
+  document.getElementById("profile").innerHTML=
+`👤 Name: <span>${student.name}</span><br>
+📊 %: <span>${student.percentage}</span><br>
+🎯 Course: <span>${student.course}</span>`;
+}
+
+function add(text,cls){
+  const div=document.createElement("div");
+  div.className="msg "+cls;
+  div.innerText=text;
+  chatBox.appendChild(div);
+  chatBox.scrollTop=chatBox.scrollHeight;
+}
+</script>
+
+</body>
+</html>
