@@ -1,33 +1,27 @@
-# AdmitEase-University-Admission-Chatbot-
 # 🎓 AdmitEase — University Admission Chatbot
 
 <p align="center">
-  <b>A smart, interactive university admissions decision-support platform</b><br/>
-  Eligibility • Comparison • Deadlines • Counselling
+  <b>A smart, interactive Python-based university admissions decision-support platform</b><br/>
+  Eligibility • Ranking • Comparison • Deadlines • Counselling
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Status-Active-success"/>
-  <img src="https://img.shields.io/badge/Frontend-HTML%20%7C%20CSS%20%7C%20JS-blue"/>
+  <img src="https://img.shields.io/badge/Python-3.x-blue?logo=python"/>
   <img src="https://img.shields.io/badge/Backend-FastAPI-green"/>
+  <img src="https://img.shields.io/badge/Frontend-HTML%20%7C%20CSS%20%7C%20JS-blue"/>
   <img src="https://img.shields.io/badge/Use--case-Education-orange"/>
+  <img src="https://img.shields.io/badge/Status-Active-success"/>
 </p>
 
 ---
 
-## ✨ What is AdmitEase?
+## ✨ Overview
 
-**AdmitEase** is an **interactive university admissions assistant** that helps students:
+**AdmitEase** is an **interactive university admissions assistant** built using **Python (FastAPI)** that helps students make informed admission decisions.
 
-- check eligibility instantly  
-- discover the **best university match**  
-- compare universities side-by-side  
-- track deadlines  
-- get counselling & FAQs  
+It simplifies complex eligibility rules, ranks universities, highlights the **best match**, and enables side-by-side comparison — all through a clean chatbot-style interface.
 
-All through a **clean, chatbot-style interface**.
-
-> 💡 Built to simplify complex admission rules into clear decisions.
+> 💡 Designed as a real-world **decision-support system**, not just a chatbot.
 
 ---
 
@@ -46,58 +40,58 @@ All through a **clean, chatbot-style interface**.
 
 ## 🚀 Key Features
 
-### 🧾 Smart Onboarding
-- Single-line input:  
-  **Name Percentage Course**
-- Live profile preview in sidebar
+### 🧾 Smart Student Onboarding
+- Single-line input: **Name Percentage Course**
+- Live profile preview in the sidebar
 
-### ⭐ Best University Recommendation
-- Automatically highlights **BEST MATCH**
+### ⭐ Intelligent University Recommendation
+- Auto-checks eligibility using percentage
+- Ranks universities logically
+- ⭐ Highlights the **BEST MATCH**
 - Displays best university **at the top**
-- Based on eligibility + ranking logic
 
 ### 🏫 University Exploration
-Each university shows:
-- Programs offered  
-- Minimum percentage  
-- Application deadline  
-- Registration mode  
-- Eligibility status  
+Each university displays:
+- Programs offered
+- Minimum percentage requirement
+- Application deadline
+- Registration mode (Online / Entrance / Interview)
+- Eligibility status
 
-### ⚖️ Click-to-Compare
-- Click universities to select
+### ⚖️ Click-to-Compare Universities
+- Click universities to select them
 - Compare **two universities side-by-side**
-- Clean comparison tray (no clutter)
+- Clean comparison tray (no clutter inside cards)
 
 ### 📅 Deadline Awareness
-- Shows deadlines clearly
-- Warns for approaching deadlines
+- Clearly displays application deadlines
+- Alerts users for approaching deadlines
 
 ### 🎓 Guidance & Support
 - Counselling section
-- FAQ for common doubts
+- FAQ for common admission-related doubts
 - Contact information
 - Document checklist
 
 ### 🎨 UI / UX
 - Professional dark gradient theme
 - Sidebar-based navigation
-- Clean chat layout
-- No copied templates
+- Clean, readable chat layout
+- Custom design (no copied templates)
 
 ---
 
 ## 🔄 How It Works
 
 ```text
-Student Input
-     ↓
+User Profile Input
+       ↓
 Profile Parsing
-     ↓
-Eligibility Check
-     ↓
+       ↓
+Eligibility Evaluation
+       ↓
 University Ranking
-     ↓
+       ↓
 Best Match Highlighted
-     ↓
+       ↓
 Comparison / Guidance
